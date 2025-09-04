@@ -33,6 +33,42 @@ var swiper1 = new Swiper(".projects-slider", {
     prevEl: ".projects-slider .swiper-button-prev"
   }
 });
+var swiper2 = new Swiper(".header-service-slider", {
+  observer: true,
+  observeParents: true,
+  observeSlideChildren: true,
+  slidesPerView: 1,
+  spaceBetween: 8,
+  navigation: {
+    nextEl: ".header-service-slider .swiper-button-next",
+    prevEl: ".header-service-slider .swiper-button-prev"
+  }
+});
+var swiper3 = new Swiper(".mobile-services-slider", {
+  observer: true,
+  observeParents: true,
+  observeSlideChildren: true,
+  slidesPerView: 1.05,
+  spaceBetween: 8,
+  navigation: {
+    nextEl: ".mobile-services-slider .swiper-button-next",
+    prevEl: ".mobile-services-slider .swiper-button-prev"
+  }
+});
+var swiper3 = new Swiper(".mobile-news-slider", {
+  observer: true,
+  observeParents: true,
+  observeSlideChildren: true,
+  slidesPerView: 1.05,
+  spaceBetween: 8
+});
+var swiper4 = new Swiper(".directions-slider", {
+  observer: true,
+  observeParents: true,
+  observeSlideChildren: true,
+  slidesPerView: 1.05,
+  spaceBetween: 8
+});
 document.addEventListener('DOMContentLoaded', function () {
   const tabsBlock = document.querySelector('.tabs-block');
   const tabButtons = tabsBlock.querySelectorAll('.tab-nav-button');
@@ -116,45 +152,89 @@ document.addEventListener('DOMContentLoaded', function () {
   const overlay = document.createElement('div');
   overlay.className = 'menu-overlay';
   document.body.appendChild(overlay);
-
   function openMenu() {
     menu.classList.add('show');
     overlay.classList.add('show');
     body.style.overflow = 'hidden';
   }
-
-  // Функция закрытия меню
   function closeMenu() {
     menu.classList.remove('show');
     overlay.classList.remove('show');
     body.style.overflow = '';
   }
-
   menuButton.addEventListener('click', openMenu);
-
   closeButton.addEventListener('click', closeMenu);
-
   overlay.addEventListener('click', closeMenu);
-
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && menu.classList.contains('show')) {
       closeMenu();
     }
   });
-
   const menuLinks = menu.querySelectorAll('a');
   menuLinks.forEach(link => {
     link.addEventListener('click', closeMenu);
   });
-
   document.addEventListener('click', function (e) {
     if (menu.classList.contains('show') && !menuButton.contains(e.target) && !menu.contains(e.target)) {
       closeMenu();
     }
   });
-
   menu.addEventListener('click', function (e) {
     e.stopPropagation();
+  });
+});
+document.addEventListener('DOMContentLoaded', function () {
+  var modalButtons = document.querySelectorAll('.open-modal-dialog'),
+    overlay = document.querySelector('body'),
+    closeButtons = document.querySelectorAll('.modal-dialog .modal-close');
+  async function openModal(modalBtn) {
+    return new Promise(resolve => {
+      var modalId = modalBtn.getAttribute('data-src'),
+        modalElem = document.querySelector('.modal-dialog.' + modalId);
+      overlay.classList.add('modal-open');
+      modalElem.style.display = 'flex';
+      setTimeout(function () {
+        modalElem.classList.add('modal-opening');
+        resolve();
+      }, 0);
+    });
+  }
+  async function closeModal(closeBtn) {
+    return new Promise(resolve => {
+      var modal = closeBtn.closest('.modal-dialog');
+      modal.classList.remove('modal-opening');
+      modal.classList.add('modal-closing');
+      setTimeout(function () {
+        modal.classList.remove('modal-closing');
+        modal.style.display = 'none';
+        overlay.classList.remove('modal-open');
+        resolve();
+      }, 500);
+    });
+  }
+
+  /* open modal */
+  modalButtons.forEach(function (modalBtn) {
+    modalBtn.addEventListener('click', async function (e) {
+      e.preventDefault();
+      await openModal(modalBtn);
+    });
+  });
+
+  /* close modal */
+  closeButtons.forEach(function (closeBtn) {
+    closeBtn.addEventListener('click', async function (e) {
+      await closeModal(closeBtn);
+    });
+  });
+  document.querySelectorAll('.modal-dialog').forEach(function (item) {
+    item.addEventListener('click', async function (e) {
+      if (e.target !== e.currentTarget) {
+        return;
+      } else {
+        await closeModal(this);
+      }
+    });
   });
 });
 
